@@ -28,6 +28,12 @@ if (novo && !items.some((i) => i.id === novo.id)) {
   items.push(novo);
 }
 
+if (novo) {
+  const posicao = items.findIndex((i) => i.id === novo.id);
+  if (posicao === -1) items.unshift(novo);
+  else items[posicao] = novo;
+}
+
 ---
 
 <html lang="pt-BR">
@@ -47,6 +53,12 @@ if (novo && !items.some((i) => i.id === novo.id)) {
           <small>
             {item.pessoas.length > 1 ? "Do casal" : item.pessoas[0]?.name}
           </small>
+          {item.status_Item !== "realizado" && (
+            <form method="POST" action="/api/concluir">
+              <input type="hidden" name="id" value={item.id} />
+              <button type="submit">Marcar como realizado</button>
+            </form>
+          )}
         </li>
       ))}
     </ul>

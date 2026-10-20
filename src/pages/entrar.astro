@@ -1,0 +1,32 @@
+---
+export const prerender = false;
+
+import { hygraph } from "../lib/hygraph";
+import type { Pessoa } from "../lib/types";
+
+const { pessoas } = await hygraph<{ pessoas: Pessoa[] }>(`
+  query { pessoas { id name } }
+`);
+const erro = Astro.url.searchParams.has("erro");
+---
+
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>Entrar</title>
+  </head>
+  <body>
+    <h1>Quem é você?</h1>
+    <form method="POST" action="/api/entrar">
+      {pessoas.map((p) => (
+        <label>
+          <input type="radio" name="pessoa" value={p.id} required />
+          {p.name}
+        </label>
+      ))}
+      <input type="password" name="senha" placeholder="Senha" required />
+      <button type="submit">Entrar</button>
+      {erro && <p>Senha incorreta.</p>}
+    </form>
+  </body>
+</html>

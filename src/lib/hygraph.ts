@@ -1,9 +1,8 @@
-const endpoint = import.meta.env.HYGRAPH_ENDPOINT;
-const token = import.meta.env.HYGRAPH_READ_TOKEN;
-
-export async function hygraph<T>(
+async function request<T>(
+  endpoint: string,
+  token: string,
   query: string,
-  variables: Record<string, unknown> = {}
+  variables: Record<string, unknown>
 ): Promise<T> {
   const res = await fetch(endpoint, {
     method: "POST",
@@ -14,11 +13,32 @@ export async function hygraph<T>(
     body: JSON.stringify({ query, variables }),
   });
 
-  if (!res.ok) throw new Error(`Hygraph HTTP ${res.status}`);
-
   const json = await res.json();
-  if (json.errors) {
-    throw new Error(json.errors.map((e: { message: string }) => e.message).join("; "));
+  
+  if (!res.ok || json?.errors) {
+    const detail =
+      json?.errors?.map((e: { message: string }) => e.message).join("; ") ??
+      `sem detalhes`;
+    throw new Error(`Hygraph (${res.status}): ${detail}`);
   }
+
   return json.data as T;
+}
+
+export function hygraph<T>(query: string, variables: Record<string, unknown> = {}) {
+  return request<T>(
+    import.meta.env.HYGRAPH_ENDPOINT,
+    import.meta.env.HYGRAPH_READ_TOKEN,
+    query,
+    variables
+  );
+}
+
+export function hygraphWrite<T>(query: string, variables: Record<string, unknown> = {}) {
+  return request<T>(
+    import.meta.env.HYGRAPH_ENDPOINT,
+    import.meta.env.HYGRAPH_READ_TOKEN,
+    query,
+    variables
+  );
 }

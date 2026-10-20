@@ -1,0 +1,49 @@
+---
+export const prerender = false;
+
+const erro = Astro.url.searchParams.has("erro");
+---
+
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>Novo item</title>
+  </head>
+  <body>
+    <h1>Novo item</h1>
+    <form method="POST" action="/api/items">
+      <label>
+        Título
+        <input type="text" name="title" maxlength="120" required />
+      </label>
+
+      <label>
+        Categoria
+        <select name="category">
+          <option value="sonho">Sonho</option>
+          <option value="meta">Meta</option>
+          <option value="conquista">Conquista</option>
+        </select>
+      </label>
+
+      <label>
+        Status
+        <select name="status">
+          <option value="ideia">Ideia</option>
+          <option value="emAndamento">Em andamento</option>
+          <option value="realizado">Realizado</option>
+        </select>
+      </label>
+
+      <fieldset>
+        <legend>Para quem?</legend>
+        <label><input type="radio" name="escopo" value="individual" checked /> Só meu</label>
+        <label><input type="radio" name="escopo" value="casal" /> Do casal</label>
+      </fieldset>
+
+      <button type="submit">Salvar</button>
+      {erro && <p>Não deu certo. Tente de novo.</p>}
+    </form>
+    <a href="/">Voltar</a>
+  </body>
+</html>

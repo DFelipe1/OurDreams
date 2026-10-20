@@ -15,6 +15,19 @@ const { items } = await hygraph<{ items: Item[] }>(`
     }
   }
 `);
+
+let recente: Item | null = null;
+try {
+  recente = Astro.cookies.get("recente")?.json() ?? null;
+} catch {
+  recente = null;
+}
+
+const novo = recente;
+if (novo && !items.some((i) => i.id === novo.id)) {
+  items.push(novo);
+}
+
 ---
 
 <html lang="pt-BR">
@@ -24,6 +37,7 @@ const { items } = await hygraph<{ items: Item[] }>(`
   </head>
   <body>
     <h1>Nossos sonhos</h1>
+    <a href="/novo">+ Novo item</a>
     <ul>
       {items.map((item) => (
         <li>

@@ -7,3 +7,7 @@ export type Item = {
   category: "sonho" | "meta" | "conquista";
   pessoas: Pessoa[];
 };
+
+export const CATEGORIAS = ["sonho", "meta", "conquista"] as const;
+export const STATUS = ["ideia", "emAndamento", "realizado"] as const;
+export const SCOPE = ["individual", "casal"] as const;
